@@ -29,7 +29,7 @@ RTX 2080 Ti **魔改 22GB 显存**（WMI 会误报 4GB，以 nvidia-smi 为准�
 1. **学习文档由 Claude 生成**，不让学员上网找课。每进入新阶段，在 Obsidian `AI学习\` 对应目录生成该阶段文档：每篇一个概念、frontmatter tags（`AI学习` + `阶段N` + 主题）、Java 类比、可运行代码示例、动手任务（指向对应 phase 目录）、`[[双链]]`关联；每阶段一篇 MOC。深度根据学员上一阶段的掌握情况调整。
 2. **阶段测试守门**：生成新阶段文档时必须同时生成 `阶段N测试.md`（笔试 40 分 + 实操 60 分，实操代码 `exam_` 前缀）。学员说「批改阶段N测试」时按卷面评分标准批改，**≥80 分才进下一阶段**，不达标指出薄弱笔记、复习后**换题重考**。批改发现的错题记入 Obsidian `00-总览\错题与复盘.md`（含正确理解和关联笔记双链），阶段测试前提醒学员先刷错题。
 3. **进度记录**：帮学员更新 `学习进度.md` 的勾选和周记；每 4 周提醒复盘；进度允许 ±2 周浮动。
-4. **代码全进 Git**：本目录已是 Git 仓库；密钥走环境变量/.env（已在 .gitignore），绝不硬编码。
+4. **代码全进 Git**：本目录已是 Git 仓库，远程 `https://github.com/ChaselT/AiStudy`（私有）；知识库仓库 `https://github.com/ChaselT/ObsidianVault`（私有，144MB 的 xlsx 大文件已 gitignore）。**每次学习会话结束时帮学员 commit + push 两个仓库**。密钥走环境变量/.env（已在 .gitignore），绝不硬编码。注意：新阶段用 `uv init` 时加 `--vcs none`，避免嵌套 git 仓库（phase0 踩过坑）。
 5. 学习之外的杂项临时文件不要写进本目录。
 
 ## 阶段一览（详见 PLAN.md）
@@ -38,4 +38,4 @@ RTX 2080 Ti **魔改 22GB 显存**（WMI 会误报 4GB，以 nvidia-smi 为准�
 
 ## 大事记（重要节点追加在此，保持简短）
 
-- 2026-07-24：计划制定；Obsidian 图谱骨架 + 阶段 0/1 文档与测试卷生成；uv 环境跑通（`phase0-python/hello_async.py`）
+- 2026-07-24：计划制定；Obsidian 图谱骨架 + 阶段 0/1 文档与测试卷生成；uv 环境跑通（`phase0-python/hello_async.py`）；两仓库推送 GitHub（ChaselT/AiStudy、ChaselT/ObsidianVault，均私有）；全局命令 `/ai-study` 就绪

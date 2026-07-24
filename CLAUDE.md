@@ -6,7 +6,7 @@
 
 - 在职 Java 后端工程师，转行 AI 应用工程师（先应用后深入路线）
 - 每天约 2 小时学习时间（工作日晚间为主），全程用**中文**沟通
-- Python 起点：会基本语法；讲解新概念**优先用 Java 类比**（uv↔Maven、pydantic↔POJO/Bean Validation、FastAPI↔Spring Boot、装饰器↔注解+AOP、asyncio↔CompletableFuture）
+- Python 起点：**零基础**（2026-07-24 学员自纠，此前"会基本语法"是高估——一切 Python 内容按只懂 Java 的水平讲，宁细勿跳）；讲解新概念**优先用 Java 类比**（uv↔Maven、pydantic↔POJO/Bean Validation、FastAPI↔Spring Boot、装饰器↔注解+AOP、asyncio↔CompletableFuture）
 
 ## 关键路径
 
@@ -45,3 +45,4 @@ RTX 2080 Ti **魔改 22GB 显存**（WMI 会误报 4GB，以 nvidia-smi 为准�
 
 - 2026-07-24：计划制定；Obsidian 图谱骨架 + 阶段 0/1 文档与测试卷生成；uv 环境跑通（`phase0-python/hello_async.py`）；两仓库推送 GitHub（ChaselT/AiStudy、ChaselT/ObsidianVault，均私有）；全局命令 `/ai-study` 就绪
 - 2026-07-24：加入转行加速机制 9 条（教练模式、在职落地、博客前移、算法题、试水面试、JD 校准、会话内后台调研、周复盘内建）；Spring AI/LangChain4j 升级为阶段 3 必学模块
+- 2026-07-24：学员自纠 Python 为零基础，阶段 0 文档重构为「基础篇（9 篇零基础）+ 进阶篇（8 篇差异对比）」，阶段 0 允许延至 3 周

@@ -8,7 +8,7 @@
 
 | 阶段 | 时间 | 主题 | 产出 | 代码目录 |
 |------|------|------|------|----------|
-| 0 | 第 1-2 周 | 环境搭建 + Python 巩固 | 可用的开发环境 | `phase0-python/` |
+| 0 | 第 1-3 周 | 环境搭建 + Python 从零入门（基础篇+进阶篇） | 可用的开发环境 | `phase0-python/` |
 | 1 | 第 3-8 周 | LLM API 应用开发 | 项目① CLI 智能助手 | `phase1-llm-api/` |
 | 2 | 第 9-16 周 | RAG 与向量检索 | 项目② 知识库问答系统 | `phase2-rag/` |
 | 3 | 第 17-24 周 | Agent 开发与工程化（含多模态 + Spring AI/LangChain4j 必学） | 项目③ Agent 应用（Docker 部署 + Java 对照实现） | `phase3-agent/` |

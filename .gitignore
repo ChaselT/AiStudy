@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# 环境变量与密钥（API key 绝不进 Git）
+.env
+*.key
+
+# 数据与模型（体积大，不进 Git）
+data/
+models/
+*.gguf
+*.safetensors
+*.pt
+*.onnx
+
+# IDE
+.idea/
+.vscode/settings.json

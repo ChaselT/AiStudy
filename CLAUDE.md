@@ -23,6 +23,7 @@ RTX 2080 Ti **魔改 22GB 显存**（WMI 会误报 4GB，以 nvidia-smi 为准�
 - 能力：本地推理 Qwen2.5-14B 流畅、32B-Q4 勉强；QLoRA 微调 14B；CV 训练无压力
 - 限制：Turing sm_75 无 BF16，训练用 FP16
 - 系统有 SOCKS 代理：Python 里 httpx 需装 `httpx[socks]`
+- 学员另有一台 Mac mini（M4/16G/256G），**已决定不用于学习**（无 CUDA、内存盘都小，阶段 4 干不了）；全程固定用本 Windows 机，勿再建议双机方案
 
 ## 工作约定（Claude 必须遵守）
 

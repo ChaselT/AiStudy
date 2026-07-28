@@ -43,7 +43,8 @@ RTX 2080 Ti 魔改 22GB 显存 / i7-13700KF / 64GB 内存 / CUDA 13.1
 
 1. **在职落地 AI（杠杆最大）**：阶段 2 学完 RAG 后，主动在公司找低风险场景落地（内部文档问答、日志分析、工单分类），用 Spring AI/LangChain4j 实现——简历上的"生产环境 LLM 经验"
 2. **Java Agent 框架必学**：Spring AI（ChatClient、Tool Calling、RAG Advisor）+ LangChain4j 列入阶段 3 必学模块，项目③做 Java 对照实现或公司落地；这是混合岗的核心竞争力
-   - **版本基线（2026-07 调研确认）**：LangGraph 按 1.x 学（0.x prebuilt API 已弃用，网上旧教程别看）；MCP 以 2026-07-28 新规范为准（stateless core、Tasks、MCP Apps）；Spring AI 按 2.0 GA 学（要求 Spring Boot 4 + Java 21）
+   - **版本基线（2026-07 调研确认）**：LangGraph 按 1.x 学（0.x prebuilt API 已弃用，网上旧教程别看）；MCP 以 2026-07-28 新规范为准（已于当日正式发布：stateless core、移除 initialize 握手/session-id、12 个月弃用窗口）；Spring AI 按 2.0 GA 学（要求 Spring Boot 4 + Java 21）
+   - **阶段 3 设计要点（MCP 无状态化的直接影响）**：多轮对话的 Session/上下文管理必须在 Agent 层（LangGraph/Spring AI）显式设计，不能依赖协议层——项目③架构时落实
 3. **博客边学边写**：每阶段 1-2 篇发掘金/知乎（素材来自 Obsidian 笔记和错题本），写不清楚=没学会；不等阶段 5 补写
 4. **算法题保持**：阶段 2 起每周 2-3 题（Python 刷 LeetCode Hot 100 起步），练 Python 手感 + 保持面试状态
 5. **提前试水**：第 24 周项目③完成后即可投 Java+AI 混合岗试水，用真实面试暴露盲区，不等第 37 周

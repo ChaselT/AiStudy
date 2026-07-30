@@ -36,7 +36,7 @@ def main():
     print(f"列表{nums}的最大值是{max_num}")
     nums2 = []
     # print(f"列表{nums2}的最大值是{my_max(nums2)}") 会报错list index out of range（数组下标越界），因为不存在下标0的数据
-    print(f"列表{nums2}的最大值是{max（nums2]}")
+    print(f"列表{nums2}的最大值是{max(nums2)}")
 
 
 if __name__ == "__main__":

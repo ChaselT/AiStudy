@@ -1,0 +1,32 @@
+[
+  {
+    "url": "http://baidu.com",
+    "status": 301,
+    "elapsed_ms": 107.8713,
+    "ok": true
+  },
+  {
+    "url": "https://www.bejson.com",
+    "status": 200,
+    "elapsed_ms": 242.3968,
+    "ok": true
+  },
+  {
+    "url": "https://www.hi-code.cc",
+    "status": 200,
+    "elapsed_ms": 1518.8626,
+    "ok": true
+  },
+  {
+    "url": "https://ip.net.coffee/",
+    "status": 200,
+    "elapsed_ms": 2142.3222,
+    "ok": true
+  },
+  {
+    "url": "https://this-domain-definitely-does-not-exist-xyz789.com",
+    "status": 0,
+    "elapsed_ms": 3580.0588,
+    "ok": false
+  }
+]

@@ -40,3 +40,88 @@
   □ 故意塞一个不存在的域名进去，程序**不崩**、该站 status 为 0
 ═══════════════════════════════════════════════════════════════
 """
+
+from typing import Self
+from pydantic import BaseModel, Field, model_validator
+import httpx
+import time
+import asyncio
+from functools import wraps
+import json
+from pathlib import Path
+
+
+def timed(fn):
+    @wraps(fn)
+    async def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = await fn(*args, **kwargs)
+        print(f"{fn.__name__} took {time.perf_counter() - start:.4f}s")
+        return result
+
+    return wrapper
+
+
+class SiteReport(BaseModel):
+    url: str
+    status: int = Field(ge=0)
+    elapsed_ms: float
+    ok: bool = Field(default=False, validate_default=True)
+
+    @model_validator(mode="after")
+    def calculate_ok(self) -> Self:
+        self.ok = 200 <= self.status < 400
+        return self
+
+
+async def check_web_one(client: httpx.AsyncClient, url: str) -> SiteReport:
+
+    start = time.perf_counter()
+    res_status = 0
+    try:
+        res = await client.get(url)
+        res_status = res.status_code
+    except Exception as e:
+        print(e)
+
+    use_time = round(
+        (time.perf_counter() - start) * 1000,
+        4,
+    )
+    return SiteReport(url=url, status=res_status, elapsed_ms=use_time)
+
+
+@timed
+async def check_web_mul(urls: list[str]) -> list[SiteReport]:
+    async with httpx.AsyncClient(timeout=5.0) as client:
+        tasks = [check_web_one(client, w) for w in urls]
+        return list(await asyncio.gather(*tasks))
+
+
+async def main() -> None:
+    urls = [
+        "http://baidu.com",
+        "https://www.hi-code.cc",
+        "https://www.bejson.com",
+        "https://ip.net.coffee/",
+        "https://fo1xcode.rjj.cc/",
+    ]
+    res_list = await check_web_mul(urls)
+    res_list = sorted(res_list, key=lambda report: report.elapsed_ms)
+    print(f"|{'url':^100}|{'status':^8}|{'elapsed_ms':^14}|{'is_ok':^8}|")
+    for res in res_list:
+        print(f"|{res.url:^100}|{res.status:^8}|{res.elapsed_ms:^14}|{res.ok:^8}|")
+    file_list = [r.model_dump() for r in res_list]
+
+    Path("report.json").write_text(
+        json.dumps(
+            file_list,
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

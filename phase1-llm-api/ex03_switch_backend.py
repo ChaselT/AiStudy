@@ -3,8 +3,8 @@
 任务：一份代码跑通两个后端。
 1. 用环境变量 `LLM_BASE_URL` / `LLM_MODEL`（以及 `LLM_API_KEY`）控制客户端配置
 2. 同一份代码，不改一行，分别跑通：
-   - DeepSeek 云端 API
-   - 本地 Ollama（qwen2.5:14b）
+   - 云端 API（中转站 / DeepSeek 均可）
+   - 本地 Ollama（`qwen3.5:27b`）
 3. 打印当前实际使用的 base_url 与 model，方便确认真的切过去了
 
 要求/提示：

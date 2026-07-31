@@ -10,7 +10,7 @@
 - 能不看笔记写出带流式输出的多轮对话脚本
 - 能跑通 Function Calling 完整闭环（模型请求调用 → 执行函数 → 回传结果）
 - 能用 pydantic 校验 LLM 的 JSON 输出并实现失败重试
-- 本地 Ollama 跑通 qwen2.5:14b，并用 openai SDK 连接它
+- 本地 Ollama 跑通 `qwen3.5:27b`，并用 openai SDK 连接它
 - 用 FastAPI 写出 SSE 流式聊天接口
 - 完成项目①：CLI 智能助手
 

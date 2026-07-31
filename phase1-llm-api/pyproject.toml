@@ -19,3 +19,8 @@ dev = [
     "pytest>=9.1.1",
     "ruff>=0.16.0",
 ]
+
+[tool.mypy]
+# 让"函数没写返回注解"直接变成错误——否则 mypy 默认跳过无注解函数的函数体（免检区），
+# 会给出虚假的 Success。本人已在此栽过四次（阶段0测试丢 2 分即因于此）。
+disallow_untyped_defs = true

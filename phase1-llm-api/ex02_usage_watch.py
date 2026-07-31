@@ -1,5 +1,9 @@
 """阶段 1 · 《Token与上下文窗口》· 动手任务 2 + 任务 3
 
+⚠️ **前置依赖：本题需要先学完下一课《Chat Completions API》**
+   （messages 数组结构、role 三种角色、多轮对话怎么拼、client 怎么建——本课都没讲）
+   建议顺序：本课先做完 ex02_token_count.py → 学《Chat Completions API》→ 回头做本题。
+
 任务 2：观察多轮对话的 token 膨胀。
 1. 连续进行 5 轮对话（可以是脚本里写死的 5 个问题，不必手动 input）
 2. 每轮打印 `resp.usage.prompt_tokens`
@@ -15,3 +19,9 @@
 - `trim_history` 要小心别把 system 消息一起截掉
 - 完成标准：两组数字对比明显，能解释"为什么第 5 轮比第 1 轮贵"
 """
+def main():
+    print("Hello from phase1-llm-api!")
+
+
+if __name__ == "__main__":
+    main()

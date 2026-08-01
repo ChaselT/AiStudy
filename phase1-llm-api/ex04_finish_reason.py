@@ -12,6 +12,7 @@
 - 完成标准：两次运行分别打出 length 和 stop，告警逻辑生效
 """
 
+import logging
 import os
 
 import openai
@@ -25,6 +26,12 @@ client = openai.OpenAI(
     timeout=300.0,
     max_retries=3,  # 换 base_url 即换供应商
 )
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 
 def main() -> None:
@@ -42,10 +49,22 @@ def main() -> None:
         ],
         max_tokens=30000,
     )
-    print(f"{resp.choices[0].message.content}")
-    print(f"finish_reason: {resp.choices[0].finish_reason}")
-    if resp.choices[0].finish_reason == "length":
-        print("警告：回答被截断！")
+    if resp.choices:
+        match resp.choices[0].finish_reason:
+            case "stop":
+                if resp.choices[0].message.refusal:
+                    logger.info("模型拒绝回答（如敏感内容）")
+                else:
+                    logger.info("回答完成。")
+            case "length":
+                logger.warning("警告：回答被截断！")
+            case "tool_calls":
+                logger.info("模型调用了工具（如 code interpreter / function call）")
+            case "content_filter":
+                logger.info("内容被平台安全策略拦截")
+            case _:
+                logger.error("未知 finish_reason：%s", resp.choices[0].finish_reason)
+        logger.info("finish_reason: %s", resp.choices[0].finish_reason)
 
 
 if __name__ == "__main__":
@@ -90,3 +109,11 @@ if __name__ == "__main__":
 #   - 这种垃圾回收机制在性能上比标准的JGRT稍好一点。
 #   - 但是由于需要专门知道如何设置环境变量才可取到良好效果，也存在依赖于编译的缺点：因为这些设定和参数可能会随程序改动。而大部分开发人员都还没有掌握这种特性。
 # finish_reason: stop
+
+# 虽然是stop，但回答的内容完全是胡编乱造，幻觉严重。
+
+# 常见的 finish_reason 取值：
+# - stop：模型自己说完了
+# - length：回答被截断了（max_tokens 不够）
+# - tool_calls：模型调用了工具（如 code interpreter / function call）
+# - content_filter：模型拒绝回答（如敏感内容）

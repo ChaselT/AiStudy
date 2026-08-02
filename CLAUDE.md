@@ -42,6 +42,16 @@ RTX 2080 Ti **魔改 22GB 显存**（WMI 会误报 4GB，以 nvidia-smi 为准�
 7. **会话内后台调研（用户要求）**：每次 `/ai-study` 学习会话开始时，后台启动一个调研 Agent，联网搜集与学员**当前阶段**相关的新框架、新工具、最佳实践变化（GitHub trending、框架 release、岗位技术栈动向）；会话结束时汇报 1-3 条值得关注的点，若影响学习计划则提议修订 PLAN.md（经学员确认后修改并记大事记）。目的：计划不脱离现实。
    - **每周需求调研（2026-07-29 追加）**：**每周一次**（周日复盘时，或距上次满 7 天）另起一个调研 Agent，专查「AI 应用生态里真实存在但未被满足的需求」，为学员的**开源项目选题**积累素材：GitHub trending 反映的痛点、社区抱怨（r/LocalLLaMA、HN、V2EX、知乎）、**Java+AI 生态空白**（差异化优势区）、MCP 新规范落地机会、本地模型工具空白。每个候选必须带**需求证据 + 来源链接**（没证据的想法不收），并评估竞品空隙/技术栈契合/可完成度/简历价值。结果写入 `00-总览\开源选题池.md`（候选清单 + 每周趋势记录）。**决策时点**：阶段 2 末初筛 2-3 个 → 阶段 3 定案，优先让项目③本身就是这个开源项目。
 8. **Java+AI 双轨强化**：转行入口以 Java+AI 混合岗打开，Spring AI 与 LangChain4j 是阶段 3 的**必学模块**（生成阶段 3 文档时必须包含这两个框架的笔记）；项目③需有 Java 对照实现或公司真实落地。**阶段 3 文档版本基线**：LangGraph 1.x、MCP 2026-07-28 新规范、Spring AI 2.0（Boot 4 + Java 21）——生成时先联网核实是否又有更新。
+9. **博客推送流程（2026-08-02 跑通）**：文章写在 `E:\workspace\AiStudy\blog\`，推送公众号草稿箱走 hermes 的技能脚本（不在 Claude Code 技能列表，直接调脚本）：
+    ```powershell
+    $py = "C:\Users\tangx\AppData\Local\hermes\hermes-agent\venv\Scripts\python.exe"
+    cd "C:\Users\tangx\AppData\Local\hermes\skills\wechat-article-writer"
+    & $py scripts\format_article.py --input <md路径>          # → 同目录生成 .html
+    & $py scripts\publish_draft.py --html <html> --title <标题> --thumb <封面.jpg> --digest <摘要>
+    ```
+    - **封面必填**：JPG/PNG 且 **<64KB**；学员选择用 Pillow 本地生成极简款（深色底 `#0F172A` + 亮青 `#38BDF8` 点缀 + 微软雅黑 `C:/Windows/Fonts/msyh.ttc`，900×500，quality=95 约 57KB）
+    - ⚠️ **必踩坑**：微信要求调用 IP 在白名单内，报 `errcode 40164`。该请求**不走系统代理**，用的是家宽真实公网 IP，而家宽是动态 IP——**每次变更都要去公众号后台「设置与开发→基本配置→IP白名单」重加**，需管理员扫码
+    - 推送后提醒学员在后台复核**代码块和表格**的渲染（微信编辑器与本地 HTML 有差异），并做移动端预览
 10. **实战资产 video-clipper-pro（2026-07-31 纳入）**：学员另有一款自己设计、AI 代写实现的商业剪辑软件（`E:\workspace\python\video-clipper-pro`，src 28k 行 / 967 测试 / 含手写 MCP Server 与多 provider LLM 网关），**但他未细读代码**（懂 why 不懂 how）。详见 Obsidian `00-总览\实战资产-video-clipper-pro.md`。约定：
     - **定位为支线**，不占主线学习时间；靠里面的技术点（多轮生成-验证循环、SSE 网关、MCP、成本门控）说话，不靠产品本身
     - **每学完阶段 1 的一课，提示学员回读项目里的对应实现**并讲清"当初为什么这么做"——每读懂一块，简历多一条经得起深挖的内容

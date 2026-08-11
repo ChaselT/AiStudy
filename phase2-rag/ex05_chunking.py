@@ -5,8 +5,13 @@
    在同一份文档上对比切出来的结果
 2. 实现 structure_chunk()：基于上一课的 heading_path，
    并把标题路径拼进 chunk 开头
-3. **长度分布分析**：三种方法各自的 chunk 长度直方图（用 token 数不是字符数，
-   tiktoken 你阶段 1 用过），找出异常短的 chunk 并说明原因
+3. **长度分布分析**：三种方法各自的 chunk 长度直方图（用 token 数不是字符数），
+   找出异常短的 chunk 并说明原因
+   ⚠️ 2026-08-11 订正：原文写"用 tiktoken"，但**这里的硬约束是 bge-m3 的 8192 上限，
+      而 tiktoken 是 OpenAI 的分词器，数出来不是 bge-m3 的 token 数**。
+      粗估可以用 tiktoken，但要知道它有偏差；想准就用 bge-m3 自己的 tokenizer
+      （sentence-transformers 加载后可直接 `model.tokenizer`）。
+      在注释里写明你用了哪种、偏差大概多少
 4. **边界断裂实验**：构造一段"关键信息横跨两个 chunk 边界"的文本
    （问题在上一段、答案在下一段），验证三组对照：
    - 无 overlap 时能不能检索到？

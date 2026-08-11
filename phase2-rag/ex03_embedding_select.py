@@ -5,8 +5,12 @@
 2. **批量 vs 单条对照**：100 条文本，分别用单条循环和一次批量，记录耗时
 3. **截断验证**（本课最重要）：构造一段超过模型上限的长文本，
    故意把关键信息放在**最后**，然后检索它——看是不是真的搜不到
-4. 至少再拉一个模型（Qwen3-Embedding / gte-multilingual-base）做对比：
-   同一组句子，两个模型的相似度矩阵有什么不同？分数分布呢？
+4. 至少再拉一个模型做对比：同一组句子，两个模型的相似度矩阵有什么不同？分数分布呢？
+   ⚠️ 2026-08-11 订正：原文推荐的 `gte-multilingual-base` **Ollama 上没有**（要走
+      sentence-transformers 才能用）。Ollama 可直接 pull 的候选：
+        qwen3-embedding（有 0.6b / 4b / 8b 多个 tag，中英俱强，首选）
+        mxbai-embed-large / bge-large / nomic-embed-text（更小更快，适合当对照）
+      选 qwen3-embedding:0.6b 做对比最合适——和 bge-m3 体量接近，比得干净
 5. 写下你的选型决定和理由
 
 要求/提示：

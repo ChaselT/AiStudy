@@ -1,4 +1,4 @@
-"""阶段 1 · 项目①：CLI 智能助手 · 工具定义与注册表
+r"""阶段 1 · 项目①：CLI 智能助手 · 工具定义与注册表
 
 本文件职责：定义各工具的 JSON schema、实现对应的 Python 函数、维护名字到函数的注册表。
 
@@ -52,3 +52,174 @@
     先想清楚值不值得：get_current_time / calculator 都是微秒级，并行省不下什么，
     只有 search_web 这类网络 I/O 才有收益。**先测单个工具的耗时，别为不存在的瓶颈优化**
 """
+
+import json
+import os
+from collections.abc import Callable
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+from openai.types.chat import (
+    ChatCompletionToolParam,
+)
+
+
+def tool_error(code: str, message: str) -> str:
+    return json.dumps(
+        {"ok": False, "error": {"code": code, "message": message}},
+        ensure_ascii=False,
+    )
+
+
+def get_current_time() -> str:
+    china_tz = timezone(timedelta(hours=8))
+    return datetime.now(china_tz).strftime("%Y-%m-%d %H:%M")
+
+
+def calculator(expression: str) -> str:
+    if not isinstance(expression, str) or not expression.strip():
+        return tool_error("INVALID_EXPRESSION", "表达式不能为空")
+
+    allowed = set("0123456789+-*/(). ")
+    if not set(expression) <= allowed:
+        return tool_error("INVALID_EXPRESSION", "表达式含有非法字符")
+
+    try:
+        return str(eval(expression, {"__builtins__": {}}, {}))
+    except ZeroDivisionError:
+        return tool_error("DIVISION_BY_ZERO", "除数不能为零")
+    except (SyntaxError, TypeError, ValueError, ArithmeticError):
+        return tool_error("INVALID_EXPRESSION", "表达式格式错误或无法计算")
+    except Exception:  # noqa: BLE001
+        return tool_error("CALCULATION_FAILED", "计算失败")
+
+
+def load_base_dir() -> Path | None:
+    value = os.getenv("READ_BASE_DIR")
+    if not value:
+        return None
+
+    try:
+        return Path(value).resolve()
+    except (OSError, RuntimeError):
+        return None
+
+
+BASE_DIR = load_base_dir()
+
+
+MAX_FILE_LINES = 10
+MAX_FILE_CHARS = 4000
+
+
+def read_file(path: str) -> str:
+    if BASE_DIR is None:
+        return tool_error(
+            "CONFIG_ERROR",
+            "READ_BASE_DIR 未配置或配置无效",
+        )
+    raw_path = Path(path)
+
+    # 如果传入相对路径，就认为是相对于 BASE_DIR
+    candidate = raw_path if raw_path.is_absolute() else BASE_DIR / raw_path
+
+    try:
+        real_path = candidate.resolve()
+    except OSError:
+        return "错误: 路径无效或无法访问"
+
+    # 必须 resolve 后再校验，防目录穿越、防软链接跳出 BASE_DIR
+    try:
+        real_path.relative_to(BASE_DIR)
+    except ValueError:
+        return tool_error("OUTSIDE_BASE_DIR", "禁止读取目录外的文件")
+    if not real_path.exists():
+        return tool_error("FILE_NOT_FOUND", "文件不存在")
+    if not real_path.is_file():
+        return tool_error("NOT_A_FILE", "目标不是文件")
+
+    try:
+        content = real_path.read_text(encoding="utf-8")
+    except PermissionError:
+        return tool_error("PERMISSION_ERROR", "没有权限读取文件")
+    except UnicodeDecodeError:
+        return tool_error("Unicode_ERROR", "文件不是 UTF-8 文本")
+    except OSError:
+        return tool_error("READ_FAILED", "文件读取失败")
+
+    total_lines = len(content.splitlines())
+
+    truncated_content = content
+    truncated_reasons: list[str] = []
+
+    if total_lines > MAX_FILE_LINES:
+        truncated_content = "\n".join(truncated_content.splitlines()[:MAX_FILE_LINES])
+        truncated_reasons.append(f"共 {total_lines} 行，仅返回前 {MAX_FILE_LINES} 行")
+
+    if len(truncated_content) > MAX_FILE_CHARS:
+        truncated_content = truncated_content[:MAX_FILE_CHARS]
+        truncated_reasons.append(f"内容过长，仅返回前 {MAX_FILE_CHARS} 个字符")
+
+    if truncated_reasons:
+        return f"已截断，{'; '.join(truncated_reasons)}：\n{truncated_content}"
+
+    return content
+
+
+TOOLS: list[ChatCompletionToolParam] = [
+    {
+        "type": "function",
+        "function": {
+            "name": "calculator",
+            "description": "计算数学表达式，支持加减乘除和括号",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "expression": {"type": "string", "description": "如 '3*(4+5)'"}
+                },
+                "required": ["expression"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_current_time",
+            "description": "获取东八区当前时间",
+            "parameters": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": False,
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "read_file",
+            "description": (
+                "读取 READ_BASE_DIR 配置目录内的 UTF-8 文本文件；"
+                "相对路径以该目录为基准，最多返回前 10 行和 4000 个字符"
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {"path": {"type": "string", "description": "文件路径"}},
+                "required": ["path"],
+                "additionalProperties": False,
+            },
+        },
+    },
+]
+
+REGISTRY: dict[str, Callable[..., str]] = {
+    "calculator": calculator,
+    "get_current_time": get_current_time,
+    "read_file": read_file,
+}
+
+
+def test_tools_and_registry_are_consistent() -> None:
+    schema_names = {item["function"]["name"] for item in TOOLS}
+    assert schema_names == set(REGISTRY)

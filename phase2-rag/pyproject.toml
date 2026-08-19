@@ -1,0 +1,26 @@
+[project]
+name = "phase2-rag"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx2[socks]>=2.10.0",
+    "numpy>=2.5.2",
+    "openai>=3.1.0",
+    "python-dotenv>=1.2.3",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=2.3.1",
+    "ruff>=0.16.3",
+]
+
+[tool.mypy]
+# 与阶段 1 保持一致的三条兜底，理由见 phase1-llm-api/pyproject.toml：
+# 1. 函数没写返回注解 -> 直接报错，否则 mypy 跳过该函数体，给出虚假的 Success
+disallow_untyped_defs = true
+# 2. 已经失效的 type: ignore 要提醒删除，防止 ignore 像死代码一样越攒越多
+warn_unused_ignores = true
+# 3. "永远不可能相等"的比较（如忘加括号拿方法对象比字符串）直接报错
+#    ——阶段 1 的 `path.suffix[1:].lower` 少括号事故就毁在默认配置查不出来
+strict_equality = true
